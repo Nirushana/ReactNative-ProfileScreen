@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, Button, StyleSheet, SafeAreaView } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Avatar, Title, Caption, Text, TouchableRipple } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function Profile() {
     return (
         <SafeAreaView style={styles.container}>
+            <ScrollView> 
             <View style={styles.userInfoSection}>
-                <View style={{ flexDirection: 'row', marginLeft: 7, marginTop: '20%' }}>
+                <View style={{ flexDirection: 'row', marginLeft: 7, }}>
                     <Avatar.Image source={{uri: 'https://vignette.wikia.nocookie.net/naruto/images/4/42/Naruto_Part_III.png/revision/latest/scale-to-width-down/300?cb=20180117103539'}}
                     size={80} />
 
@@ -77,6 +79,7 @@ export default function Profile() {
                     </View>
                 </TouchableRipple>
             </View>
+            </ScrollView>
         </SafeAreaView>
     );
 }
@@ -116,7 +119,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     menuWrapper: {
-        marginTop: 30,
+        marginTop: 5,
     },
     menuItem: {
         flexDirection: 'row',
