@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { View, Text, StyleSheet, Platform, ImageBackground } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesom from 'react-native-vector-icons/FontAwesome';
@@ -6,8 +6,38 @@ import Feather from 'react-native-vector-icons/Feather';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
  
 export default function EditProfile() {
+
+    const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      if (Platform.OS !== 'web') {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+        }
+      }
+    })();
+  }, []);
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.cancelled) {
+      setImage(result.uri);
+    }
+  };
 
     const renderInner = () => (
         <View style={styles.panel}>
@@ -18,7 +48,7 @@ export default function EditProfile() {
             <TouchableOpacity style={styles.panelButton}>
                 <Text style={styles.panelButtonTitle}>Take Photo</Text>  
             </TouchableOpacity>
-            <TouchableOpacity style={styles.panelButton}>
+            <TouchableOpacity style={styles.panelButton} onPress={pickImage}>
                 <Text style={styles.panelButtonTitle}>Choose from Library</Text>  
             </TouchableOpacity>
             <TouchableOpacity style={styles.panelButton} onPress={() => sheetRef.current.snapTo(1)}>
@@ -53,11 +83,11 @@ export default function EditProfile() {
                 <View style={{alignItems: 'center'}}>
                     <TouchableOpacity onPress={() => sheetRef.current.snapTo(0)}>
                         <View style={{height: 100, width: 100, borderRadius: 15, justifyContent: 'center', alignItems: 'center',}}>
-                            <ImageBackground source={{ uri: 'https://vignette.wikia.nocookie.net/naruto/images/4/42/Naruto_Part_III.png/revision/latest/scale-to-width-down/300?cb=20180117103539' }} style={{height: 100, width: 100,}} imageStyle={{borderRadius: 15}} >
+                           {image && <ImageBackground source={{ uri: image }} style={{height: 100, width: 100,}} imageStyle={{borderRadius: 15}} >
                                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
                                     <Icon name="camera" size={35} color="#fff" style={{opacity: 0.7, alignItems: 'center', justifyContent: 'center', borderWidth: 1, borderColor: '#fff', borderRadius: 10,}} />
                                 </View>    
-                            </ImageBackground> 
+                            </ImageBackground> }
                         </View>
                     </TouchableOpacity>
                     <Text style={{marginTop: 10, fontSize: 18, fontWeight: 'bold'}}>K.Nirushana</Text>
