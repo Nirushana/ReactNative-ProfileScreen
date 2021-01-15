@@ -4,13 +4,54 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesom from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
-
+import BottomSheet from 'reanimated-bottom-sheet';
+import Animated from 'react-native-reanimated';
+ 
 export default function EditProfile() {
+
+    const renderInner = () => (
+        <View style={styles.panel}>
+            <View style={{alignItems: 'center',}}>
+                <Text style={styles.panelTitle}>Upload Photo</Text>
+                <Text style={styles.panelSubtitle}>Choose Your Profile Picture</Text>
+            </View>
+            <TouchableOpacity style={styles.panelButton}>
+                <Text style={styles.panelButtonTitle}>Take Photo</Text>  
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.panelButton}>
+                <Text style={styles.panelButtonTitle}>Choose from Library</Text>  
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.panelButton} onPress={() => sheetRef.current.snapTo(1)}>
+                <Text style={styles.panelButtonTitle}>Cancel</Text>  
+            </TouchableOpacity>
+        </View>
+    );
+
+    const renderHeader = () => (
+        <View style={styles.header}>
+            <View style={styles.panelHeader}>
+                <View style={styles.panelHandle} /> 
+            </View>
+        </View>
+    );  
+
+    const sheetRef = React.useRef(null);
+    const fall = new Animated.Value(1);
+
     return (
         <View style={styles.container}>
-            <View style={{margin: 20,}}>
+            <BottomSheet
+                ref={sheetRef}
+                snapPoints= {[330, 0]}
+                renderContent= {renderInner }
+                renderHeader= {renderHeader}
+                initialSnap= {1}
+                callbackNode= {fall}
+                enabledGestureInteraction= {true}
+            />
+            <Animated.View style={{margin: 20, opacity: Animated.add(0.2, Animated.multiply(fall, 1.0))}}>
                 <View style={{alignItems: 'center'}}>
-                    <TouchableOpacity onPress={() => {}}>
+                    <TouchableOpacity onPress={() => sheetRef.current.snapTo(0)}>
                         <View style={{height: 100, width: 100, borderRadius: 15, justifyContent: 'center', alignItems: 'center',}}>
                             <ImageBackground source={{ uri: 'https://vignette.wikia.nocookie.net/naruto/images/4/42/Naruto_Part_III.png/revision/latest/scale-to-width-down/300?cb=20180117103539' }} style={{height: 100, width: 100,}} imageStyle={{borderRadius: 15}} >
                                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center',}}>
@@ -57,7 +98,7 @@ export default function EditProfile() {
                 <TouchableOpacity style={styles.commandButton} onPress={() => {}} >
                     <Text styles={styles.panelButtonTitle}>Submit</Text>
                 </TouchableOpacity>
-            </View>
+            </Animated.View>
         </View>
     )
 }
@@ -77,12 +118,12 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: '#FFFFFF',
         paddingTop: 20,
-        //borderTopLeftRadius: 20,
-        //borderTopRightRadius: 20,
-        //shadowColor: '#000000',
-        //shadowOffset: {width: 0, height: 0},
-        //shadowRadius: 5,
-        //shadowOpacity: 0.4,
+        // borderTopLeftRadius: 20,
+        // borderTopRightRadius: 20,
+        // shadowColor: '#000000',
+        // shadowOffset: {width: 0, height: 0},
+        // shadowRadius: 5,
+        // shadowOpacity: 0.4,
     },
     header: {
         backgroundColor: '#FFFFFF',
@@ -90,7 +131,7 @@ const styles = StyleSheet.create({
         shadowOffset: {width: -1, height: -3},
         shadowRadius: 2,
         //elevation: 5,
-        paddingTop: 20,
+        paddingTop: 10,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
     },
@@ -99,10 +140,10 @@ const styles = StyleSheet.create({
     },
     panelHandle: {
         width: 40,
-        height: 8,
+        height: 4,
         borderRadius: 4,
         backgroundColor: '#00000040',
-        marginBottom: 10,
+        
     },
     panelTitle: {
         fontSize: 27,
@@ -115,7 +156,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     panelButton: {
-        padding: 13,
+        padding: 12,
         borderRadius: 10,
         backgroundColor: '#FF6347',
         alignItems: 'center',
